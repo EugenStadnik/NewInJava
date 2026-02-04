@@ -1,9 +1,9 @@
 package org.yevhenstadnik.newinjava.java17;
 
-public class InstanceofSwitch {
+public class PatternMatchingForSwitch {
 
     public static void main(String[] args) {
-        InstanceofSwitch example = new InstanceofSwitch();
+        PatternMatchingForSwitch example = new PatternMatchingForSwitch();
         example.check(null);
         example.check("Hello, World!");
         example.check(42);
@@ -11,10 +11,9 @@ public class InstanceofSwitch {
     }
 
     void check(Object obj) { // right arrow "->" notation (fallthrough is not allowed)
-        switch (obj) {
-            case null -> System.out.println("It's null");  // in other case will throw NullPointerException
-            case String s -> System.out.println("It's a string: " + s); // the subtype pattern should be first
-            case CharSequence cs -> additionalConditions(cs);                      // the supertype pattern should be after
+        switch (obj) { // could throw NullPointerException
+            case String s -> System.out.println("It's a string: " + s);     // the subtype pattern MUST be first
+            case CharSequence cs -> additionalConditions(cs);               // the supertype pattern MUST be after
             case Number n -> additionalConditions(n);
             default -> System.out.println("Unknown type"); // omitting default will produce a compilation error except sealed classes
         }
@@ -22,7 +21,7 @@ public class InstanceofSwitch {
 
     void additionalConditions(Number number) { // colon ":" notation (fallthrough is possible)
         switch (number) {
-            case null: // in other case will throw NullPointerException
+            case null: // in another case will throw NullPointerException
                 break;
             case Integer i:
                 if (i >= 100) {
@@ -41,9 +40,11 @@ public class InstanceofSwitch {
 
     void additionalConditions(CharSequence text) {
         switch (text) {  // could throw NullPointerException
-            case String s /*&& (s.length() > 10)*/ -> //Somehow it doesn't work for me
+            case String s when (s.length() > 100) ->     // Use "when" as a guard condition
+                    System.out.println("The text is longer than 100 characters: " + s);
+            case String s when (s.length() > 10) ->     // Use "when" as a guard condition
                     System.out.println("The text is longer than 10 characters: " + s);
-            default ->
+            case null, default ->                                       // A combination of null and default cases is allowed
                     System.out.println("The text is less than 10 characters: " + text); // omitting default will produce a compilation error except sealed classes
         }
     }

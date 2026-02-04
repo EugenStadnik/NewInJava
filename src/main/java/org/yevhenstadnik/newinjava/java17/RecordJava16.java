@@ -1,6 +1,6 @@
 package org.yevhenstadnik.newinjava.java17;
 
-public record /*<T>*/ RecordJava16(String name, int idNo) // Generic types are not supported
+public record RecordJava16(String name, int idNo)
     // extends Record implicitly
     // extends OtherClass provides a compilation error
     implements NameId // Is possible to implement interfaces
@@ -80,4 +80,8 @@ interface NameId {
 
 class RecordDerived /* extends RecordJava16 */ {
     // Will produce compilation failure because records are implicitly final
+}
+
+record RecordGeneric<T>(T value) {
+    // Records can be generic
 }
